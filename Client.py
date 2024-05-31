@@ -49,6 +49,7 @@ def display_sources_menu(client_socket):
 #Parameters:
 Categories = ["business", "entertainment", "general", "health", "science" "sports", "technology"]
 Countries = ["au", "nz", "ca", "ae", "sa", "gb", "us", "eg", "ma"]
+Languages =["ar", "en"]
 
 while True:
  opt = display_main_menu
@@ -64,7 +65,7 @@ while True:
            # headlines(client_socket)
        elif opt_headlines == 2:
       
-            print(["business, entertainment, general, health, science, sports, technology"])
+            print("[business, entertainment, general, health, science, sports, technology]")
             category = input("\nEnter category: ")
             if category not in Categories:
                   print("Invalid Category!")
@@ -74,7 +75,8 @@ while True:
             # headlines(client_socket)
 
        elif opt_headlines == 3:
-           country = input("[au, nz, ca, ae, sa, gb, us, eg, ma]","\nEnter country: ")
+           print("[au, nz, ca, ae, sa, gb, us, eg, ma]")
+           country = input("\nEnter country: ")
            if country not in Countries:
                print("Invalid Country!")
             
@@ -89,11 +91,57 @@ while True:
        
        elif opt_headlines == 5:
             print("123")
+            #return
        else:
             print("Invalid Option!")
+            #return
 
  elif opt == 2:
        display_sources_menu(client_socket)
+
+       if opt_sources == 1:
+            print(["business, entertainment, general, health, science, sports, technology"])
+            category = input("\nEnter category: ")
+            if category not in Categories:
+                 print("Invalid Category!")
+                 #return
+            opt = f"2. {opt_sources}.{category}"
+            Client_send = (opt, client_socket)
+            # sources(client_socket)
+            
+             
+       elif opt_sources == 2:
+           print("[au, nz, ca, ae, sa, gb, us, eg, ma]")
+           country = input("\nEnter country: ")
+           if country not in Countries:
+               print("Invalid Country!")
+            
+           opt = f"1. {opt_sources}.{country}"
+           Client_send = (opt, client_socket)
+           # sources(client_socket)
+       
+       elif opt_sources == 3:
+            print("[ar, en]")
+            Language = input("\nEnter language: ")
+            if Language not in Languages:
+                 print("Invalid Language!")
+                 #return
+            opt = f"2. {opt_sources}.{Language}"
+            Client_send = (opt, client_socket)
+            # sources(client_socket)
+       
+       elif opt_sources == 4:
+            opt = f"{opt_sources}.null"
+            Client_send = (opt, client_socket)
+            # sources(client_socket)
+       elif opt_sources == 5:
+            print("123")
+            #return
+       else:
+            print("Invalid Option!")
+            #return
+
+
  elif opt == 3:
        print("Thank you for using the news aggregator service.","\n Goodbye :)")
        break
