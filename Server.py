@@ -91,6 +91,3 @@ def headlines_request(request_type, filter_criteria, name, article_number):
                 return json.dumps(articles_info, ensure_ascii=False)
     except Exception as e:
         return f"An unexpected error occurred 1: {e}"
-
-def sources_request(request_type, filter_criteria, name, source_number):
-    ApiKey = "92caab6f774548e2852b1aa6ceed17b7"
