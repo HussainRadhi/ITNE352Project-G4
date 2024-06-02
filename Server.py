@@ -156,6 +156,7 @@ def sources_request(request_type, filter_criteria, name, source_number):
                 return json.dumps(sources_info, ensure_ascii=False)
     except Exception as e:
         return f"An unexpected error occurred 2: {e}"
+
 # Get Full Data
 def receive_full_data(client_socket, buffer_size=4096):
     data = b""
@@ -164,3 +165,8 @@ def receive_full_data(client_socket, buffer_size=4096):
         data += part
         if len(part) < buffer_size:
             break
+    try:
+        decoded_data = data.decode()  # Try to decode the received data
+    except UnicodeDecodeError:
+        decoded_data = data  # If decoding fails, use the raw bytes
+    return decoded_data
