@@ -254,3 +254,21 @@ def handle_connection(connection, name):
                 print("Thread for : "+str(name)+" is disconnected")
                 # Closing the connection and ending the thread
                 connection.close()
+
+# Function to start the server and handle client connections
+def start_server():
+    global SERVER
+    try:
+        # Creating an SSL context on the server side
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.load_cert_chain(certfile="server_cert.pem", keyfile="server_key.pem",password="22552255")
+        # Creating a socket for the server with IPv4 and TCP protocol
+        SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Binding the server socket to a specific IP address and port number (127.0.0.1:49995 in my case)
+        SERVER.bind(("127.0.0.1", 49995))
+
+        # Setting up the server to listen for client connections
+        SERVER.listen(5)
+
+        # Notifying that the server is started
+        print("server is started")
