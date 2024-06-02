@@ -272,3 +272,17 @@ def start_server():
 
         # Notifying that the server is started
         print("server is started")
+        # Continuous loop to accept and handle client connections
+        while True:
+            # Accepting a client connection
+            connection, address = SERVER.accept()
+            ssl_connection = ssl_context.wrap_socket(connection, server_side=True)
+            # Receiving the client's name from the client
+            client_name = receive_full_data(ssl_connection)
+            # Creating a new thread to handle the client connection
+            thread = threading.Thread(target=handle_connection, args=(ssl_connection, client_name))
+            thread.start()
+    except Exception as e:
+        print(f"An unexpected error occurred 4: {e}")
+
+start_server()
