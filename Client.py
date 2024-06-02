@@ -216,3 +216,106 @@ def serve_client():
                         print_selected_article_headlines(receive_full_data(client))
                     elif second_option_request == 5:
                         break
+                    else:
+                        break
+            elif option_request == 2:
+                while True:
+                    print("List of sources menu:")
+                    print("1- Search By Category.")
+                    print("2- Search by Country")
+                    print("3- Search by Language")
+                    print("4- List all")
+                    print("5- Back to The Main Menu")
+                    # Getting the option selected by the user
+                    third_option_request = int(input())
+                    # Handling different options selected by the user
+                    if third_option_request == 1:
+                        client.sendall("5".encode())
+                        valid_categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
+                        category = ""
+                        while category.lower() not in valid_categories:
+                            category = input("Please input search category (business, entertainment, general, health, science, sports, technology): ").strip()
+                        client.sendall(category.encode())
+                        json_data = receive_full_data(client)
+                        try:
+                            data_dict = json.loads(json_data)
+                            sources = data_dict.get('sources', [])
+                            idx = print_table_sources(sources)
+                        except json.JSONDecodeError as e:
+                            print(f"Failed to decode JSON: {e}")
+                            print("Received data:", json_data)
+                        selected_source = ""
+                        while not selected_source.isdigit() or not (1 <= int(selected_source) <= idx):
+                            selected_source = str(input("Please Enter Source Number: "))
+                        client.sendall(selected_source.encode())
+                        print_selected_source(receive_full_data(client))
+                    elif third_option_request == 2:
+                        client.sendall("6".encode())
+                        valid_countries = ["au", "nz", "ca", "ae", "sa", "gb", "us", "eg", "ma"]
+                        country = ""
+                        while country.lower() not in valid_countries:
+                            country = input("Please input search country (au, nz, ca, ae, sa, gb, us, eg, ma): ").strip()
+                        client.sendall(country.encode())
+                        json_data = receive_full_data(client)
+                        try:
+                            data_dict = json.loads(json_data)
+                            sources = data_dict.get('sources', [])
+                            idx = print_table_sources(sources)
+                        except json.JSONDecodeError as e:
+                            print(f"Failed to decode JSON: {e}")
+                            print("Received data:", json_data)
+                        selected_source = ""
+                        while not selected_source.isdigit() or not (1 <= int(selected_source) <= idx):
+                            selected_source = str(input("Please Enter Source Number: "))
+                        client.sendall(selected_source.encode())
+                        print_selected_source(receive_full_data(client))
+                    elif third_option_request == 3:
+                        client.sendall("7".encode())
+                        valid_languages = ["ar", "en"]
+                        language = ""
+                        while language.lower() not in valid_languages:
+                            language = input("Please input search language (ar, en): ").strip()
+                        client.sendall(language.encode())
+                        json_data = receive_full_data(client)
+                        try:
+                            data_dict = json.loads(json_data)
+                            sources = data_dict.get('sources', [])
+                            idx = print_table_sources(sources)
+                        except json.JSONDecodeError as e:
+                            print(f"Failed to decode JSON: {e}")
+                            print("Received data:", json_data)
+                        selected_source = ""
+                        while not selected_source.isdigit() or not (1 <= int(selected_source) <= idx):
+                            selected_source = str(input("Please Enter Source Number: "))
+                        client.sendall(selected_source.encode())
+                        print_selected_source(receive_full_data(client))
+                    elif third_option_request == 4:
+                        client.sendall("8".encode())
+                        json_data = receive_full_data(client)
+                        try:
+                            data_dict = json.loads(json_data)
+                            sources = data_dict.get('sources', [])
+                            idx = print_table_sources(sources)
+                        except json.JSONDecodeError as e:
+                            print(f"Failed to decode JSON: {e}")
+                            print("Received data:", json_data)
+                        selected_source = ""
+                        while not selected_source.isdigit() or not (1 <= int(selected_source) <= idx):
+                            selected_source = str(input("Please Enter Source Number: "))
+                        client.sendall(selected_source.encode())
+                        print_selected_source(receive_full_data(client))
+                    elif third_option_request == 5:
+                        break
+                    else:
+                        break
+            elif option_request == 3:
+                client.sendall("9".encode())
+                print("Your Disconnected now.")
+                exit(0)
+            else:
+                continue    #continue when user entered incorrect input
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        serve_client()
+# Starting the client interaction
+serve_client()
