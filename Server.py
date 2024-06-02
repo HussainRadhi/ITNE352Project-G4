@@ -156,3 +156,11 @@ def sources_request(request_type, filter_criteria, name, source_number):
                 return json.dumps(sources_info, ensure_ascii=False)
     except Exception as e:
         return f"An unexpected error occurred 2: {e}"
+# Get Full Data
+def receive_full_data(client_socket, buffer_size=4096):
+    data = b""
+    while True:
+        part = client_socket.recv(buffer_size)
+        data += part
+        if len(part) < buffer_size:
+            break
