@@ -91,3 +91,68 @@ def headlines_request(request_type, filter_criteria, name, article_number):
                 return json.dumps(articles_info, ensure_ascii=False)
     except Exception as e:
         return f"An unexpected error occurred 1: {e}"
+        
+def sources_request(request_type, filter_criteria, name, source_number):
+    ApiKey = "92caab6f774548e2852b1aa6ceed17b7"
+    try:
+        if request_type in ["country", "language", "category","All"]:
+            if source_number == "":
+                if request_type != "All":
+                    request_url = f"https://newsapi.org/v2/top-headlines/sources?{request_type.lower()}={filter_criteria}&apiKey={ApiKey}&pageSize=15&page=1"
+                else:
+                    request_url = f"https://newsapi.org/v2/top-headlines/sources?&apiKey={ApiKey}&pageSize=15&page=1"
+                try:
+                    response = requests.get(request_url)
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    return f"Request failed: {e}"
+                try:
+                    data = response.json()
+                except json.JSONDecodeError:
+                    return "Failed to parse the response JSON."
+                if 'sources' in data:
+                    sources = data['sources']
+                    if sources:
+                        try:
+                            save_f_data(data,"sources", name, request_type)
+                        except IOError as e:
+                            return f"Failed to save data to file: {e}"
+                        json_data = json.dumps(data, ensure_ascii=False)
+                        return json_data
+                    else:
+                        return "No Sources found in the response."
+                else:
+                    return "No 'Sources' key found in the response."
+            else:
+                try:
+                    with open(f"G4_{name}_sources_{request_type}.json", 'r', encoding='utf-8') as file:
+                        data = json.load(file)
+                except FileNotFoundError:
+                    return ("File not found.")
+                except json.JSONDecodeError:
+                    return ("Failed to parse the saved JSON file.")
+                except IOError as e:
+                    return (f"Failed to read file: {e}")
+
+                sources_info = []
+                sources = data.get('sources', [])
+                source_number = int(source_number)-1
+                if sources:
+                    if 0 <= source_number < len(sources):
+                        source = sources[source_number]
+                        info = {
+                            'name': source.get('name', 'Unknown'),
+                            'country': source.get('country', 'Unknown'),
+                            'description': source.get('description', 'No description'),
+                            'url': source.get('url', 'Unknown'),
+                            'category': source.get('category', 'Unknown'),
+                            'language': source.get('language', 'Unknown')
+                        }
+                        sources_info.append(info)
+                    else:
+                        return(f"Source at index {source_number} not found.")
+                else:
+                    return("No sources found in the data.")
+                return json.dumps(sources_info, ensure_ascii=False)
+    except Exception as e:
+        return f"An unexpected error occurred 2: {e}"
