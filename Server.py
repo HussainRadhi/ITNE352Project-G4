@@ -170,3 +170,87 @@ def receive_full_data(client_socket, buffer_size=4096):
     except UnicodeDecodeError:
         decoded_data = data  # If decoding fails, use the raw bytes
     return decoded_data
+    
+# Function to handle a client connection with the server
+def handle_connection(connection, name):
+    global SERVER
+    try:
+        # Adding the client's name to the list of connected clients
+        clients_list.append(name)
+        # Notifying the server about the new thread
+        print(name, " Have a Thread in the server now")
+        print("Current clients in the server: " + str(clients_list))
+        # Sending the updated list of connected clients to the client
+        connection.sendall(str(clients_list).encode())
+        # Continuous loop to handle client requests
+        while True:
+            # Receiving the option selected by the client
+            received_option = receive_full_data(connection)
+            # Handling different options selected by the client
+            if str(received_option) == "1":
+                keyword = receive_full_data(connection)
+                print(str(name)+" has selected Headlines Keyword Option and The Keyword is :"+ keyword)
+                connection.sendall(headlines_request("q", keyword, name,"").encode())
+                article_number = receive_full_data(connection)
+                print(str(name) + " has selected Headlines Keyword Option and The Keyword is :" + keyword + " And Selected Article are: "  + article_number)
+                result = headlines_request("q", keyword, name,article_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "2":
+                category = receive_full_data(connection)
+                print(str(name)+" has selected Headlines Category Option and The category is :"+ category)
+                connection.sendall(headlines_request("category", category, name,"").encode())
+                article_number = receive_full_data(connection)
+                print(str(name) + " has selected Headlines Category Option and The category is :" + category + " And Selected Article are: "  + article_number)
+                result = headlines_request("category", category, name,article_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "3":
+                country = receive_full_data(connection)
+                print(str(name)+" has selected Headlines Country Option and The country is :"+ country)
+                connection.sendall(headlines_request("country", country, name,"").encode())
+                article_number = receive_full_data(connection)
+                print(str(name) + " has selected Headlines Country Option and The country are :" + country + " And Selected Article are: "  + article_number)
+                result = headlines_request("country", country, name,article_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "4":
+                print(str(name)+" has selected All Top Headlines Option")
+                connection.sendall(headlines_request("All", "", name,"").encode())
+                article_number = receive_full_data(connection)
+                print(str(name) + " has selected All Top Headlines Option And Selected Article are: "  + article_number)
+                result = headlines_request("All", "", name,article_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "5":
+                category = receive_full_data(connection)
+                print(str(name)+" has selected Sources Category  Option and The category is :"+ category)
+                connection.sendall(sources_request("category", category, name,"").encode())
+                source_number = receive_full_data(connection)
+                print(str(name) + " has selected Sources Category Option and The category are :" + category + " And Selected Source are: "  + source_number)
+                result = sources_request("category", category, name, source_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "6":
+                country = receive_full_data(connection)
+                print(str(name)+" has selected Sources Country Option and The country is :"+ country)
+                connection.sendall(sources_request("country", country, name,"").encode())
+                source_number = receive_full_data(connection)
+                print(str(name) + " has selected Sources Country Option and The category are :" + country + " And Selected Source are: "  + source_number)
+                result = sources_request("country", country, name, source_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "7":
+                language = receive_full_data(connection)
+                print(str(name)+" has selected Sources language Option and The Language is :"+ language)
+                connection.sendall(sources_request("language", language, name,"").encode())
+                source_number = receive_full_data(connection)
+                print(str(name) + " has selected Sources language Option and The Language are :" + language + " And Selected Source are: "  + source_number)
+                result = sources_request("language", language, name, source_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "8":
+                print(str(name)+" has selected All Sources Option")
+                connection.sendall(sources_request("All", "", name,"").encode())
+                source_number = receive_full_data(connection)
+                print(str(name) + " has selected All Sources Option And Selected Source are: "  + source_number)
+                result = sources_request("All", "", name,source_number)
+                connection.sendall(result.encode())
+            elif str(received_option) == "9":
+                # Notifying the server that the thread for the client is disconnected
+                print("Thread for : "+str(name)+" is disconnected")
+                # Closing the connection and ending the thread
+                connection.close()
